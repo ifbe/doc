@@ -1,0 +1,27 @@
+sd:	4bit		1bit		spi mode
+------------------------------------------------
+|-8	d1/irq		irq		irq
+|-7	d0		data		data out
+|-6	vss2		vss2		vss2
+|-5	clk		clk		clk
+|-4	vdd		vdd		vdd
+|-3	vss1		vss1		vss1
+|-2	cmd		cmd		data in
+|-1	d3/cs		not used	cs
+ \-9	d2/rw		read wait
+  ----------------------------------------------
+
+
+
+
+tf:	sd mode		spi mode
+--------------------------------
+|-8	d1
+|-7	d0		data out
+|-6	vss		vss
+|-5	clk		clk
+|-4	vdd		vdd
+|-3	cmd		data in
+|-2	d3		cs
+|-1	d2
+    \---------------------------
