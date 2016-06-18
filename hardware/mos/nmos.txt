@@ -1,0 +1,4 @@
+gate drain source
+if(gate-source >= vgs)open
+if(gate-source <= 0)close
+if(0 < gate-souce < vgs)halfopen halfclose

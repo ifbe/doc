@@ -1,0 +1,4 @@
+gate drain source
+if(gate-source >= 0)close
+if(gate-source <= -3)open
+if(-vgs < gate-source < 0)halfopen halfclose
