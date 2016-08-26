@@ -1,0 +1,54 @@
+low speed:
+	device:		d-(pullup, 1.5kohm)
+
+
+full speed:
+	device:		d+(pullup, 1.5kohm)
+
+
+high speed:
+	device:		d+(pullup, 1.5kohm)
+
+	host:		recognize d+
+	host:		(d+,d-)(low, 10ms)
+
+	device:		recognize low
+	device:		d-(out, 17.78ma, 1~7ms)		//K0
+
+	host:		recognize K0
+	host:		d-(out, 17.78ma, 40~60us)	//K1
+	host:		d+(out, 17.78ma, 40~60us)	//J1
+	host:		d-(out, 17.78ma, 40~60us)	//K2
+	host:		d+(out, 17.78ma, 40~60us)	//J2
+	host:		d-(out, 17.78ma, 40~60us)	//K3
+	host:		d+(out, 17.78ma, 40~60us)	//J3
+	host:		(in 100~500ms), stop rst on d+,d-
+
+	device:		recognize 6 KJKJKJ
+	device:		(in 500us), d+(free), enter high speed
+
+
+sdp:
+	host:		(d+,d-)(pulldown, 15kohm)
+
+
+cdp:
+	host:		(d+,d-)(pulldown, 15kohm)
+	device:		d+(high), d-(pulldown)
+	host:		d+(low)
+	device:		d+(free), d-(free)
+
+
+dcp:
+	host:		(d+,d-)short
+
+
+qc2.0:
+	host:		(d+,d-)short
+
+
+qc3.0:
+	host:		(d+,d-)short
+
+
+usb pd3.0:
