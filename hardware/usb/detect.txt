@@ -1,3 +1,63 @@
+##################### step1: poweron ######################
+host:
+	5v on
+########################## step1 ##########################
+
+
+
+
+
+##################### step2: charge #######################
+sdp:
+	host:		(d+,d-)(pulldown, 15kohm)
+
+	device:		d+(vdp_src), d-(idm_sink)
+
+	device:		recognize v(d-) < v(dat_ref)
+
+
+cdp:
+	host:		(d+,d-)(pulldown, 15kohm)
+
+	device:		d+(vdp_src), d-(idm_sink)
+
+	host:		recognize d+(vdp_src)
+	host:		d-(vdm_src)
+
+	device:		recognize v(dat_ref) < v(d-) < v(lgc)
+	device:		set d-(vdm_src), d+(idp_sink)
+
+	device:		recognize v(d+) < v(dat_ref)
+	device:		turnoff vdp_src,vdm_src
+
+
+dcp:
+	host:		(d+,d-)(short,<200kohm)
+
+	device:		d+(vdp_src), d-(idm_sink)
+
+	device:		recognize v(dat_ref) < v(d-) < v(lgc)
+	device:		d-(vdm_src), d+(idp_sink)
+
+	device:		recognize v(dat_ref) < v(d+)
+	device:		d+(vdp_src)
+
+
+qc2.0:
+	host:		(d+,d-)(short,<200kohm)
+
+
+qc3.0:
+	host:		(d+,d-)(short,<200kohm)
+
+
+usb pd3.0:
+############################ step2 ##########################
+
+
+
+
+######################### step3: data ##########################
 low speed:
 	device:		d-(pullup, 1.5kohm)
 
@@ -27,28 +87,82 @@ high speed:
 	device:		recognize 6 KJKJKJ
 	device:		(in 500us), d+(free), enter high speed
 
+typec dfp:	#host
+	0.25v < cc < 0.61v:	default power
+	0.70v < cc < 1.16v:	1.5A
+	1.31v < cc < 2.04v:	3A
 
-sdp:
-	host:		(d+,d-)(pulldown, 15kohm)
+typec ufp:	#device
+	cc(down, 5.1kohm)
 
+typec audio:	#device
+	cc1(down, <Ra), cc2(down, <Ra)
+	Dn = left, Dp = right, SBU1/SBU2 = mic/gnd, cc1/cc2 = DET
 
-cdp:
-	host:		(d+,d-)(pulldown, 15kohm)
-	device:		d+(high), d-(pulldown)
-	host:		d+(low)
-	device:		d+(free), d-(free)
-
-
-dcp:
-	host:		(d+,d-)short
-
-
-qc2.0:
-	host:		(d+,d-)short
+############################# data ############################
 
 
-qc3.0:
-	host:		(d+,d-)short
 
 
-usb pd3.0:
+########################## phy #############################
+2.0 device{
+	vbus{
+		5v
+		9v
+		20v
+	}vbus
+
+	d-{
+		v(dm_src)
+		r(dm_dwn)
+		i(dm_sink)
+	}d-
+
+	d+{
+		v(dp_src)
+		v(lhc_hi) or i(dp_src)
+		i(dp_sink)
+	}d+
+
+	gnd
+}device
+
+2.0 host{
+	vbus{
+		5v
+		9v
+		20v
+	}vbus
+
+	d-{
+		r(dm_dwn)
+		v(dm_src)
+	}d-
+	d+{
+		r(dp_dwn)
+		i(dp_sink)
+	}d+
+	gnd
+}host
+
+typec{
+	vbus
+	{
+		source
+		sink
+	}
+
+	cc1
+	{
+		Rp
+		Rd
+	}
+
+	cc2
+	{
+		Rp
+		Rd
+	}
+}typec
+
+########################## phy #############################
