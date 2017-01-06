@@ -1,168 +1,83 @@
-##################### step1: poweron ######################
-host:
-	5v on
-########################## step1 ##########################
-
-
-
-
-
-##################### step2: charge #######################
+##################### charge #######################
 sdp:
-	host:		(d+,d-)(pulldown, 15kohm)
-
-	device:		d+(vdp_src), d-(idm_sink)
-
-	device:		recognize v(d-) < v(dat_ref)
+	host:		(dp,dm)(pulldown, 15kohm)
+	device:		set(dp=vdp_src, dm=idm_sink), get(dm=0)
 
 
 cdp:
-	host:		(d+,d-)(pulldown, 15kohm)
-
-	device:		d+(vdp_src), d-(idm_sink)
-
-	host:		recognize d+(vdp_src)
-	host:		d-(vdm_src)
-
-	device:		recognize v(dat_ref) < v(d-) < v(lgc)
-	device:		set d-(vdm_src), d+(idp_sink)
-
-	device:		recognize v(d+) < v(dat_ref)
-	device:		turnoff vdp_src,vdm_src
+	host:		(dp,dm)(pulldown, 15kohm)
+	device:		set(dp=vdp_src, dm=idm_sink)
+	host:		get(dp=0.6), set(dm=0.6)
+	device:		get(dm=0.6), set(dm=vdm_src, dp=idp_sink)
+	host:		get(dm=0.6), set(nothing)
+	device:		get(dp=0)
 
 
 dcp:
-	host:		(d+,d-)(short,<200kohm)
-
-	device:		d+(vdp_src), d-(idm_sink)
-
-	device:		recognize v(dat_ref) < v(d-) < v(lgc)
-	device:		d-(vdm_src), d+(idp_sink)
-
-	device:		recognize v(dat_ref) < v(d+)
-	device:		d+(vdp_src)
+	host:		(dp,dm)(short,<200kohm)
+	device:		set(dp=vdp_src, dm=idm_sink), get(dm=0.6)
+	device:		set(dm=vdm_src, dp=idp_sink), get(dp=0.6)
 
 
-qc2.0:
-	host:		(d+,d-)(short,<200kohm)
+qc:
+	after dcp
+	device:		set(dp=0.325, 1.25s)
+	host:		get(dp=0.325, 1.25s), unshort dpdm
+	device:		get(dm--, 1ms), set(dp=, dm=)
+{
+	5v(dp=0.6, dm=0)
+	9v(dp=3.3, dm=0.6)
+	12v(dp=0.6, dm=0.6)
+	20v(dp=3.3, dm=3.3)
+}
 
-
-qc3.0:
-	host:		(d+,d-)(short,<200kohm)
-
-
-usb pd3.0:
-############################ step2 ##########################
-
-
-
-
-######################### step3: data ##########################
-low speed:
-	device:		d-(pullup, 1.5kohm)
-
-
-full speed:
-	device:		d+(pullup, 1.5kohm)
-
-
-high speed:
-	device:		d+(pullup, 1.5kohm)
-
-	host:		recognize d+
-	host:		(d+,d-)(low, 10ms)
-
-	device:		recognize low
-	device:		d-(out, 17.78ma, 1~7ms)		//K0
-
-	host:		recognize K0
-	host:		d-(out, 17.78ma, 40~60us)	//K1
-	host:		d+(out, 17.78ma, 40~60us)	//J1
-	host:		d-(out, 17.78ma, 40~60us)	//K2
-	host:		d+(out, 17.78ma, 40~60us)	//J2
-	host:		d-(out, 17.78ma, 40~60us)	//K3
-	host:		d+(out, 17.78ma, 40~60us)	//J3
-	host:		(in 100~500ms), stop rst on d+,d-
-
-	device:		recognize 6 KJKJKJ
-	device:		(in 500us), d+(free), enter high speed
 
 typec dfp:	#host
 	0.25v < cc < 0.61v:	default power
 	0.70v < cc < 1.16v:	1.5A
 	1.31v < cc < 2.04v:	3A
 
+
 typec ufp:	#device
 	cc(down, 5.1kohm)
+
 
 typec audio:	#device
 	cc1(down, <Ra), cc2(down, <Ra)
 	Dn = left, Dp = right, SBU1/SBU2 = mic/gnd, cc1/cc2 = DET
-
-############################# data ############################
-
+######################################################
 
 
 
-########################## phy #############################
-2.0 device{
-	vbus{
-		5v
-		9v
-		20v
-	}vbus
 
-	d-{
-		v(dm_src)
-		r(dm_dwn)
-		i(dm_sink)
-	}d-
+######################### data ##########################
+low speed:
+	device:		dm(pullup, 1.5kohm)
 
-	d+{
-		v(dp_src)
-		v(lhc_hi) or i(dp_src)
-		i(dp_sink)
-	}d+
 
-	gnd
-}device
+full speed:
+	device:		dp(pullup, 1.5kohm)
 
-2.0 host{
-	vbus{
-		5v
-		9v
-		20v
-	}vbus
 
-	d-{
-		r(dm_dwn)
-		v(dm_src)
-	}d-
-	d+{
-		r(dp_dwn)
-		i(dp_sink)
-	}d+
-	gnd
-}host
+high speed:
+	device:		dp(pullup, 1.5kohm)
 
-typec{
-	vbus
-	{
-		source
-		sink
-	}
+	host:		recognize dp
+	host:		(dp,dm)(low, 10ms)
 
-	cc1
-	{
-		Rp
-		Rd
-	}
+	device:		recognize low
+	device:		dm(out, 17.78ma, 1~7ms)		//K0
 
-	cc2
-	{
-		Rp
-		Rd
-	}
-}typec
+	host:		recognize K0
+	host:		dm(out, 17.78ma, 40~60us)	//K1
+	host:		dp(out, 17.78ma, 40~60us)	//J1
+	host:		dm(out, 17.78ma, 40~60us)	//K2
+	host:		dp(out, 17.78ma, 40~60us)	//J2
+	host:		dm(out, 17.78ma, 40~60us)	//K3
+	host:		dp(out, 17.78ma, 40~60us)	//J3
+	host:		(in 100~500ms), stop rst on dp,dm
 
-########################## phy #############################
+	device:		recognize 6 KJKJKJ
+	device:		(in 500us), dp(free), enter high speed
+
+#########################################################
