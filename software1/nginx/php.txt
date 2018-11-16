@@ -1,0 +1,2 @@
+sudo apt install php php5-fpm
+sudo vi /etc/nginx/sites-enabled/default	#search php

@@ -1,0 +1,1 @@
+sudo apt install mysql-client mysql-server php5-mysql
