@@ -21,8 +21,8 @@ echo 0x01 > bDeviceProtocol
 echo 4 >> /home/pi/usbgadget.log
 
 mkdir -p strings/0x409
-echo "serialnumber" > strings/0x409/serialnumber
-echo "manufacturer" > strings/0x409/manufacturer
+echo "42424242" > strings/0x409/serialnumber
+echo "pipipipi" > strings/0x409/manufacturer
 echo "pi0w"   > strings/0x409/product
 echo 5 >> /home/pi/usbgadget.log
 
@@ -54,5 +54,6 @@ ls /sys/class/udc/ > UDC
 echo 11 >> /home/pi/usbgadget.log
 
 /bin/sleep 2
+/bin/systemctl restart getty@ttyGS0
 /bin/systemctl restart isc-dhcp-server
 echo 12 >> /home/pi/usbgadget.log
