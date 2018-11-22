@@ -1,0 +1,9 @@
+1. download and install keil5
+2. download and install c51 for keil
+3. download stc-isp
+4. keil软件仿真 -> 添加型号和头文件到keil中
+5. project -> new uvision project -> STC MCU Database -> STC12C5A60S2
+6. Target 1 -> Options for ...
+	Target -> Xtal=11.0592
+	Output -> Create HEX File
+7. stc-isp -> 打开程序文件 -> 下载/编程 -> 插拔单片机vcc&gnd
