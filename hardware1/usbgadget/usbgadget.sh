@@ -27,13 +27,19 @@ echo "pi0w"   > strings/0x409/product
 echo 5 >> /home/pi/usbgadget.log
 
 mkdir -p functions/acm.usb0    # serial
+mkdir -p functions/hid.usb0    # keyboard
 mkdir -p functions/rndis.usb0  # network
+
+echo 1 > functions/hid.usb0/protocol
+echo 1 > functions/hid.usb0/subclass
+echo 8 > functions/hid.usb0/report_length
+echo -ne \\x05\\x01\\x09\\x06\\xa1\\x01\\x05\\x07\\x19\\xe0\\x29\\xe7\\x15\\x00\\x25\\x01\\x75\\x01\\x95\\x08\\x81\\x02\\x95\\x01\\x75\\x08\\x81\\x03\\x95\\x05\\x75\\x01\\x05\\x08\\x19\\x01\\x29\\x05\\x91\\x02\\x95\\x01\\x75\\x03\\x91\\x03\\x95\\x06\\x75\\x08\\x15\\x00\\x25\\x65\\x05\\x07\\x19\\x00\\x29\\x65\\x81\\x00\\xc0 > functions/hid.usb0/report_desc
+
 mkdir -p configs/c.1
 echo 250 > configs/c.1/MaxPower
-echo 6 >> /home/pi/usbgadget.log
-
-ln -sf functions/rndis.usb0 configs/c.1/
 ln -sf functions/acm.usb0   configs/c.1/
+ln -sf functions/hid.usb0   configs/c.1/
+ln -sf functions/rndis.usb0 configs/c.1/
 echo 7 >> /home/pi/usbgadget.log
 
 # OS descriptors

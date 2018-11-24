@@ -1,0 +1,6 @@
+if [ ! -n "$1" ];then
+echo usage: ./hidg0.sh val
+else
+echo -ne "\x0\x0\x$1\x0\x0\x0\x0\x0" > /dev/hidg0
+echo -ne "\x0\x0\x0\x0\x0\x0\x0\x0" > /dev/hidg0
+fi
