@@ -1,0 +1,3 @@
+vcgencmd measure_volts core
+vcgencmd measure_volts sdram_c
+vcgencmd measure_volts sdram_p
