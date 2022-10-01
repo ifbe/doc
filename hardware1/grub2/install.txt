@@ -1,0 +1,6 @@
+bios:
+grub2-install --target=i386-pc --boot-directory=/run/media/ifbe/C522-D75D /dev/sda
+
+uefi:(actually failed at 20221001)
+sudo dnf install grub2-efi-x64-modules
+grub2-install --target=x86_64-efi --efi-directory=/run/media/ifbe/C522-D75D --bootloader-id=GRUB
